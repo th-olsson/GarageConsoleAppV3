@@ -5,8 +5,6 @@ namespace GarageConsoleApp.UI.Forms
 {
     internal static class SearchByPropertiesForm
     {
-        private static readonly string[] TypeNames = ["Car", "Motorcycle", "Bus", "Boat", "Airplane"];
-
         internal static void Run(Garage garage)
         {
             Title("Search vehicles");
@@ -14,7 +12,7 @@ namespace GarageConsoleApp.UI.Forms
             Console.WriteLine();
 
             // The first option means "no type filter", the rest are the vehicle types
-            string[] typeOptions = ["Any type", .. TypeNames];
+            string[] typeOptions = ["Any type", .. Vehicle.TypeNames];
             int typeChoice = Choose("What type of vehicle?", typeOptions);
 
             Console.WriteLine();
@@ -24,7 +22,7 @@ namespace GarageConsoleApp.UI.Forms
 
             var filter = new VehicleFilter
             {
-                TypeName = typeChoice == 0 ? null : TypeNames[typeChoice - 1],
+                TypeName = typeChoice == 0 ? null : Vehicle.TypeNames[typeChoice - 1],
                 Color = color,
                 NumberOfWheels = wheels,
                 Model = model
