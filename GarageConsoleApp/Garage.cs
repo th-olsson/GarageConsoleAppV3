@@ -7,21 +7,9 @@ namespace GarageConsoleApp
         private readonly List<Vehicle> _vehicles;
         public string Name { get; }
         /// <summary>The number of parking spaces.</summary>
-        public int Capacity { get; private set; }
+        public int Capacity { get; }
         public int TotalUnits => ParkingUnits.FromSpaces(Capacity);
-        public int UsedUnits
-        {
-            get
-            {
-                int used = 0;
-                foreach (Vehicle? vehicle in _vehicles)
-                {
-                    if (vehicle != null)
-                        used += vehicle.SizeInUnits;
-                }
-                return used;
-            }
-        }
+        public int UsedUnits => _vehicles.Sum(vehicle => vehicle.SizeInUnits);
         public int FreeUnits => TotalUnits - UsedUnits;
 
         public Garage(string name, int capacity)
@@ -55,17 +43,7 @@ namespace GarageConsoleApp
             _vehicles.Add(vehicle);
             return ParkResult.Parked;
         }
-        public List<Vehicle> GetParkedVehicles()
-        {
-            List<Vehicle> parked = [];
-
-            foreach (Vehicle vehicle in _vehicles)
-            {
-                parked.Add(vehicle);
-            }
-
-            return parked;
-        }
+        public List<Vehicle> GetParkedVehicles() => [.. _vehicles];
         public List<(string TypeName, int Count)> CountByType() =>
             _vehicles
                 .GroupBy(vehicle => vehicle.TypeName)
@@ -95,8 +73,7 @@ namespace GarageConsoleApp
             for (int i = 0; i < _vehicles.Count; i++)
             {
                 Vehicle? vehicle = _vehicles[i];
-                if (vehicle != null &&
-                    vehicle.RegistrationNumber.Equals(registrationNumber, StringComparison.OrdinalIgnoreCase))
+                if (vehicle.RegistrationNumber.Equals(registrationNumber, StringComparison.OrdinalIgnoreCase))
                     return i;
             }
             return -1;
