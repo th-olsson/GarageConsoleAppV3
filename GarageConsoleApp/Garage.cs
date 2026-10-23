@@ -5,7 +5,6 @@ namespace GarageConsoleApp
     internal class Garage
     {
         private readonly List<Vehicle> _vehicles;
-        private static readonly string[] _typeNames = ["Car", "Motorcycle", "Bus", "Boat", "Airplane"];
         public string Name { get; }
         /// <summary>The number of parking spaces.</summary>
         public int Capacity { get; private set; }
@@ -67,28 +66,11 @@ namespace GarageConsoleApp
 
             return parked;
         }
-        public List<(string TypeName, int Count)> CountByType()
-        {
-            List<Vehicle> parked = GetParkedVehicles();
-            List<(string TypeName, int Count)> result = [];
-
-            foreach (string name in _typeNames)
-            {
-                int count = 0;
-
-                foreach (Vehicle vehicle in parked)
-                {
-                    if (vehicle.TypeName == name)
-                    {
-                        count++;
-                    }
-                }
-
-                result.Add((name, count));
-            }
-
-            return result;
-        }
+        public List<(string TypeName, int Count)> CountByType() =>
+            _vehicles
+                .GroupBy(vehicle => vehicle.TypeName)
+                .Select(group => (TypeName: group.Key, Count: group.Count()))
+                .ToList();
         public Vehicle? Find(string registrationNumber)
         {
             int index = FindIndex(registrationNumber);
