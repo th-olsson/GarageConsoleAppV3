@@ -1,4 +1,4 @@
-﻿using GarageConsoleApp.Models;
+﻿using GarageConsoleApp.Storage;
 using GarageConsoleApp.UI.Forms;
 
 namespace GarageConsoleApp.UI.Menus
@@ -10,6 +10,12 @@ namespace GarageConsoleApp.UI.Menus
             // Kept in memory when going back to this menu. Null until the garage is created.
             Garage? garage = null;
             List<Vehicle> vehicles = [];
+
+
+            // Continue where the user left off, if there is a saved garage
+            var saved = GarageStorage.Load();
+            if (saved != null)
+                (garage, vehicles) = saved.Value;
 
             MenuRunner.Run("Garage Manager", "Exit", () =>
             [
