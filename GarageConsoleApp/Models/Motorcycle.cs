@@ -2,10 +2,10 @@
 {
     internal class Motorcycle : Vehicle
     {
-        private static readonly int DefaultSizeInUnits = 1; // a third of a parking space
+        protected override int DefaultSizeInUnits => 1; // a third of a parking space
         public TransmissionType TransmissionType { get; }
 
-        public Motorcycle(string registrationNumber, string model, string color, TransmissionType transmissionType, int numberOfWheels = 2, int? sizeInUnits = null) : base(registrationNumber, model, color, numberOfWheels, sizeInUnits ?? DefaultSizeInUnits)
+        public Motorcycle(string registrationNumber, string model, string color, TransmissionType transmissionType, int numberOfWheels = 2, int? sizeInUnits = null) : base(registrationNumber, model, color, numberOfWheels, sizeInUnits)
         {
             TransmissionType = transmissionType;
         }
