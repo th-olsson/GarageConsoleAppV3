@@ -7,6 +7,8 @@
     public string Color { get; }
     public int NumberOfWheels { get; }
     public string TypeName => GetType().Name;
+    /// <summary>Details specific to the vehicle type, e.g. "Diesel" or "9.5 m".</summary>
+    public abstract string Describe();
 
     /// <summary>The size a vehicle of this type has unless a custom size is given.</summary>
     protected abstract int DefaultSizeInUnits { get; }

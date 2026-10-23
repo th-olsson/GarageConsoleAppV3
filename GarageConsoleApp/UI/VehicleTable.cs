@@ -18,12 +18,13 @@ namespace GarageConsoleApp.UI
                     v.Model,
                     v.Color,
                     v.NumberOfWheels.ToString(),
-                    ParkingUnits.Format(v.SizeInUnits)
+                    ParkingUnits.Format(v.SizeInUnits),
+                    v.Describe()
                 ];
             }
 
             // Columns 4 (Wheels) and 5 (Space) are right-aligned
-            string[] lines = Table.Format(["Type", "Reg", "Model", "Color", "Wheels", "Space"], rows, 4, 5);
+            string[] lines = Table.Format(["Type", "Reg", "Model", "Color", "Wheels", "Space", "Details"], rows, 4, 5);
 
             Text(lines[0]);
             Text(new string('-', lines[0].Length));
