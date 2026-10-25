@@ -41,11 +41,11 @@ namespace GarageConsoleApp.Storage
             Converters = { new JsonStringEnumConverter() }
         };
 
-        internal static void Save(Garage garage, List<Vehicle> vehicles)
+        internal static void Save(Garage garage)
         {
             var data = new GarageData { Name = garage.Name, Capacity = garage.Capacity };
 
-            foreach (Vehicle vehicle in vehicles)
+            foreach (Vehicle vehicle in garage.GetRegisteredVehicles())
                 data.Vehicles.Add(ToData(vehicle, garage.IsParked(vehicle.RegistrationNumber)));
 
             Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
@@ -53,7 +53,7 @@ namespace GarageConsoleApp.Storage
         }
 
         /// <summary>Returns the saved garage and vehicles, or null if there is no usable file.</summary>
-        internal static (Garage Garage, List<Vehicle> Vehicles)? Load()
+        internal static Garage? Load()
         {
             if (!File.Exists(FilePath))
                 return null;
@@ -65,18 +65,17 @@ namespace GarageConsoleApp.Storage
                     return null;
 
                 var garage = new Garage(data.Name, data.Capacity);
-                List<Vehicle> vehicles = [];
 
                 foreach (VehicleData item in data.Vehicles)
                 {
                     Vehicle vehicle = ToVehicle(item);
-                    vehicles.Add(vehicle);
+                    garage.Register(vehicle);
 
                     if (item.Parked)
                         garage.Park(vehicle);
                 }
 
-                return (garage, vehicles);
+                return garage;
             }
             catch (Exception ex) when (ex is JsonException or InvalidDataException or ArgumentException)
             {

@@ -5,14 +5,14 @@ namespace GarageConsoleApp.UI.Forms
 {
     internal static class CreateVehicleForm
     {
-        internal static void Run(Garage garage, List<Vehicle> vehicles)
+        internal static void Run(Garage garage)
         {
             Title("Add vehicle");
 
             string type = Vehicle.TypeNames[Choose("What type of vehicle?", [.. Vehicle.TypeNames])];
 
             Console.WriteLine();
-            string registrationNumber = ReadRegistrationNumber(type, vehicles);
+            string registrationNumber = ReadRegistrationNumber(type, garage);
             string model = ReadString("Model, e.g. Volvo V70: ");
             string color = ReadString("Color, e.g. Black: ");
             Console.WriteLine();
@@ -27,7 +27,7 @@ namespace GarageConsoleApp.UI.Forms
                 _ => throw new InvalidOperationException($"The form does not support {type} yet.")
             };
 
-            vehicles.Add(vehicle);
+            garage.Register(vehicle);
 
             Console.WriteLine();
             Text("Vehicle added:");
@@ -43,7 +43,7 @@ namespace GarageConsoleApp.UI.Forms
         }
 
         // Asks until the number follows the format for the type and is not already registered
-        private static string ReadRegistrationNumber(string type, List<Vehicle> vehicles)
+        private static string ReadRegistrationNumber(string type, Garage garage)
         {
             RegistrationFormat format = type == nameof(Airplane)
                 ? RegistrationFormat.Aircraft
@@ -61,7 +61,7 @@ namespace GarageConsoleApp.UI.Forms
 
                 string registrationNumber = RegistrationFormat.Normalize(input);
 
-                if (vehicles.Any(v => v.RegistrationNumber.Equals(registrationNumber, StringComparison.OrdinalIgnoreCase)))
+                if (garage.IsRegistered(registrationNumber))
                 {
                     ErrorText($"{registrationNumber} is already registered.");
                     continue;

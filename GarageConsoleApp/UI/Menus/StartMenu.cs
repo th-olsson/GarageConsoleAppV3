@@ -7,15 +7,8 @@ namespace GarageConsoleApp.UI.Menus
     {
         internal static void Run()
         {
-            // Kept in memory when going back to this menu. Null until the garage is created.
-            Garage? garage = null;
-            List<Vehicle> vehicles = [];
-
-
-            // Continue where the user left off, if there is a saved garage
-            var saved = GarageStorage.Load();
-            if (saved != null)
-                (garage, vehicles) = saved.Value;
+            // Continue where the user left off, if there is a saved garage. Otherwise null until it is created.
+            Garage? garage = GarageStorage.Load();
 
             MenuRunner.Run("Garage Manager", "Exit", () =>
             [
@@ -24,11 +17,11 @@ namespace GarageConsoleApp.UI.Menus
                 {
                     if (garage == null)
                     {
-                        vehicles = VehicleRegistry.CreateSeed();
-                        garage = CreateGarageForm.Run(vehicles);
+                        garage = CreateGarageForm.Run();
+                        GarageStorage.Save(garage);
                     }
 
-                    GarageMenu.Run(garage, vehicles);
+                    GarageMenu.Run(garage);
                 })
             ]);
         }

@@ -4,8 +4,10 @@ namespace GarageConsoleApp.UI.Forms
 {
     internal static class ManageParkingForm
     {
-        internal static void Run(Garage garage, List<Vehicle> vehicles)
+        internal static void Run(Garage garage)
         {
+            List<Vehicle> vehicles = garage.GetRegisteredVehicles();
+
             // Start from what is parked right now
             bool[] isChecked = new bool[vehicles.Count];
             for (int i = 0; i < vehicles.Count; i++)
@@ -123,7 +125,7 @@ namespace GarageConsoleApp.UI.Forms
         {
             Console.Clear();
 
-            List<ParkingReport> reports = garage.SetParked(vehicles, GetChecked(vehicles, isChecked));
+            List<ParkingReport> reports = garage.SetParked(GetChecked(vehicles, isChecked));
 
             foreach (ParkingReport report in reports)
             {

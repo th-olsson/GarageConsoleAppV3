@@ -7,7 +7,7 @@ namespace GarageConsoleApp.UI.Forms
         private const int MinCapacity = 1;
         private const int MaxCapacity = 100;
 
-        internal static Garage Run(List<Vehicle> vehicles)
+        internal static Garage Run()
         {
             Title("Create garage");
             string name = ReadString("What do you want to call your garage: ");
@@ -16,13 +16,17 @@ namespace GarageConsoleApp.UI.Forms
 
             var garage = new Garage(name, capacity);
 
+            // Every garage starts with the example vehicles in its register
+            foreach (Vehicle vehicle in VehicleRegistry.CreateSeed())
+                garage.Register(vehicle);
+
             Console.WriteLine();
             Text($"Garage \"{name}\" created with {capacity} parking spaces.");
 
             if (selected == 1)
             {
-                int parked = garage.ParkInRandomOrder(vehicles);
-                Text($"{parked} of {vehicles.Count} vehicles from the registry were parked.");
+                int parked = garage.ParkInRandomOrder(garage.GetRegisteredVehicles());
+                Text($"{parked} of {garage.GetRegisteredVehicles().Count} vehicles from the register were parked.");
             }
 
             PressAnyKey();
