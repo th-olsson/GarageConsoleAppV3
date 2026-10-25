@@ -84,6 +84,13 @@ namespace GarageConsoleApp.Storage
             }
         }
 
+        /// <summary>Deletes the saved garage, if there is one.</summary>
+        internal static void Delete()
+        {
+            if (File.Exists(FilePath))
+                File.Delete(FilePath);
+        }
+
         private static VehicleData ToData(Vehicle vehicle, bool parked)
         {
             var data = new VehicleData

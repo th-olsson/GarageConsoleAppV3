@@ -11,19 +11,35 @@ namespace GarageConsoleApp.UI.Menus
             Garage? garage = GarageStorage.Load();
 
             MenuRunner.Run("Garage Manager", "Exit", () =>
-            [
-                // Creates the garage the first time, then opens it
-                (GarageLabel(garage), () =>
+            {
+                var options = new List<(string Label, Action Action)>
                 {
-                    if (garage == null)
-                    {
-                        garage = CreateGarageForm.Run();
-                        GarageStorage.Save(garage);
-                    }
+                        // Creates the garage the first time, then opens it
+                        (GarageLabel(garage), () =>
+                        {
+                            if (garage == null)
+                            {
+                                garage = CreateGarageForm.Run();
+                                GarageStorage.Save(garage);
+                            }
 
-                    GarageMenu.Run(garage);
-                })
-            ]);
+                            GarageMenu.Run(garage);
+                        })
+                };
+
+                if (garage != null)
+                {
+                    Garage current = garage;
+                    options.Add(("Delete garage", () =>
+                    {
+                        if (DeleteGarageForm.Run(current))
+                            garage = null;
+                    }
+                    ));
+                }
+
+                return [.. options];
+            });
         }
 
         // Text for the garage option: "Create garage" if none exists, otherwise its name and occupancy
