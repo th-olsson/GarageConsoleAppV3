@@ -68,6 +68,50 @@ namespace GarageConsoleApp
 
             return results;
         }
+        /// <summary>True if all the vehicles together fit in an empty garage.</summary>
+        public bool CanHold(List<Vehicle> vehicles) => vehicles.Sum(vehicle => vehicle.SizeInUnits) <= TotalUnits;
+
+        /// <summary>
+        /// Makes the wanted vehicles parked and the other candidates not parked.
+        /// Vehicles that leave are removed first, so their space can be used by the ones that arrive.
+        /// </summary>
+        public List<ParkingReport> SetParked(List<Vehicle> candidates, List<Vehicle> wanted)
+        {
+            List<ParkingReport> reports = [];
+
+            foreach (Vehicle vehicle in candidates)
+            {
+                if (!wanted.Contains(vehicle) && Remove(vehicle.RegistrationNumber))
+                    reports.Add(new ParkingReport(vehicle, ParkingChange.LeftGarage));
+            }
+
+            foreach (Vehicle vehicle in wanted)
+            {
+                if (IsParked(vehicle.RegistrationNumber))
+                    continue;
+
+                ParkingChange change = Park(vehicle) == ParkResult.Parked
+                    ? ParkingChange.Parked
+                    : ParkingChange.NotEnoughSpace;
+                reports.Add(new ParkingReport(vehicle, change));
+            }
+
+            return reports;
+        }
+        /// <summary>Parks the vehicles in random order, skipping any that do not fit. Returns how many were parked.</summary>
+        public int ParkInRandomOrder(List<Vehicle> vehicles)
+        {
+            Vehicle[] shuffled = [.. vehicles];
+            Random.Shared.Shuffle(shuffled);
+
+            int parked = 0;
+            foreach (Vehicle vehicle in shuffled)
+            {
+                if (Park(vehicle) == ParkResult.Parked)
+                    parked++;
+            }
+            return parked;
+        }
         private int FindIndex(string registrationNumber)
         {
             for (int i = 0; i < _vehicles.Count; i++)

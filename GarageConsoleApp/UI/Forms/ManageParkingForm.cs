@@ -1,5 +1,4 @@
-﻿using GarageConsoleApp.Models;
-using static GarageConsoleApp.UI.ConsoleUI;
+﻿using static GarageConsoleApp.UI.ConsoleUI;
 
 namespace GarageConsoleApp.UI.Forms
 {
@@ -20,8 +19,9 @@ namespace GarageConsoleApp.UI.Forms
 
             while (running)
             {
-                int neededUnits = CountCheckedUnits(vehicles, isChecked);
-                bool fits = neededUnits <= garage.TotalUnits;
+                List<Vehicle> wanted = GetChecked(vehicles, isChecked);
+                int neededUnits = wanted.Sum(vehicle => vehicle.SizeInUnits);
+                bool fits = garage.CanHold(wanted);
 
                 Title($"Manage parking - {garage.Name}");
                 Text("Up/Down: move   Spacebar: check/uncheck   Enter: apply   Esc: cancel");
@@ -96,7 +96,6 @@ namespace GarageConsoleApp.UI.Forms
             // Column 3 (Space) is right-aligned
             return Table.Format(["Reg", "Model", "Type", "Space"], rows, 3);
         }
-
         private static string FormatRow(string tableLine, bool isChecked, bool isParked)
         {
             string box = isChecked ? "[x]" : "[ ]";
@@ -110,54 +109,35 @@ namespace GarageConsoleApp.UI.Forms
 
             return $"{box} {tableLine}  {status}";
         }
-
-        private static int CountCheckedUnits(List<Vehicle> vehicles, bool[] isChecked)
+        private static List<Vehicle> GetChecked(List<Vehicle> vehicles, bool[] isChecked)
         {
-            int total = 0;
+            List<Vehicle> result = [];
             for (int i = 0; i < vehicles.Count; i++)
             {
                 if (isChecked[i])
-                    total += vehicles[i].SizeInUnits;
+                    result.Add(vehicles[i]);
             }
-            return total;
+            return result;
         }
-
         private static void Apply(Garage garage, List<Vehicle> vehicles, bool[] isChecked)
         {
             Console.Clear();
-            bool anyChange = false;
 
-            // Remove first, so the freed space can be used by the vehicles parked next
-            for (int i = 0; i < vehicles.Count; i++)
+            List<ParkingReport> reports = garage.SetParked(vehicles, GetChecked(vehicles, isChecked));
+
+            foreach (ParkingReport report in reports)
             {
-                Vehicle vehicle = vehicles[i];
-                if (!isChecked[i] && garage.IsParked(vehicle.RegistrationNumber))
+                string message = report.Change switch
                 {
-                    garage.Remove(vehicle.RegistrationNumber);
-                    Text($"{vehicle.RegistrationNumber} {vehicle.Model}: left the garage");
-                    anyChange = true;
-                }
+                    ParkingChange.LeftGarage => "left the garage",
+                    ParkingChange.Parked => "parked",
+                    _ => "could not be parked, not enough space"
+                };
+
+                Text($"{report.Vehicle.RegistrationNumber} {report.Vehicle.Model}: {message}");
             }
 
-            for (int i = 0; i < vehicles.Count; i++)
-            {
-                Vehicle vehicle = vehicles[i];
-                if (isChecked[i] && !garage.IsParked(vehicle.RegistrationNumber))
-                {
-                    string message = garage.Park(vehicle) switch
-                    {
-                        ParkResult.Parked => "parked",
-                        ParkResult.NotEnoughSpace => "could not be parked, not enough space",
-                        ParkResult.AlreadyParked => "is already parked",
-                        _ => "unknown result"
-                    };
-
-                    Text($"{vehicle.RegistrationNumber} {vehicle.Model}: {message}");
-                    anyChange = true;
-                }
-            }
-
-            if (!anyChange)
+            if (reports.Count == 0)
                 Text("No changes.");
         }
     }

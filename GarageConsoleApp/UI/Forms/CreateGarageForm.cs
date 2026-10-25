@@ -1,5 +1,4 @@
-﻿using GarageConsoleApp.Models;
-using static GarageConsoleApp.UI.ConsoleUI;
+﻿using static GarageConsoleApp.UI.ConsoleUI;
 
 namespace GarageConsoleApp.UI.Forms
 {
@@ -22,32 +21,12 @@ namespace GarageConsoleApp.UI.Forms
 
             if (selected == 1)
             {
-                int parked = Populate(garage, vehicles);
+                int parked = garage.ParkInRandomOrder(vehicles);
                 Text($"{parked} of {vehicles.Count} vehicles from the registry were parked.");
             }
 
             PressAnyKey();
             return garage;
-        }
-
-        // Parks vehicles from the registry in random order, skipping any that do not fit
-        private static int Populate(Garage garage, List<Vehicle> vehicles)
-        {
-            // Shuffle a copy so the registry keeps its own order
-            List<Vehicle> shuffled = [.. vehicles];
-            for (int i = shuffled.Count - 1; i > 0; i--)
-            {
-                int j = Random.Shared.Next(i + 1);
-                (shuffled[j], shuffled[i]) = (shuffled[i], shuffled[j]);
-            }
-
-            int parked = 0;
-            foreach (Vehicle vehicle in shuffled)
-            {
-                if (garage.Park(vehicle) == ParkResult.Parked)
-                    parked++;
-            }
-            return parked;
         }
     }
 }
