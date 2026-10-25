@@ -16,6 +16,7 @@ namespace GarageConsoleApp.UI.Forms
             string[] tableLines = BuildTable(vehicles);
 
             int selected = 0;
+            int first = 0; // index of the first vehicle shown, so a long list can scroll
             bool running = true;
             Console.CursorVisible = false;
 
@@ -25,12 +26,21 @@ namespace GarageConsoleApp.UI.Forms
                 int neededUnits = wanted.Sum(vehicle => vehicle.SizeInUnits);
                 bool fits = garage.CanHold(wanted);
 
+                // Show only as many vehicles as fit in the window, scrolled so the selected one is visible
+                int visibleRows = Math.Max(3, Console.WindowHeight - 12);
+                first = Math.Min(first, Math.Max(0, vehicles.Count - visibleRows));
+                if (selected < first)
+                    first = selected;
+                if (selected >= first + visibleRows)
+                    first = selected - visibleRows + 1;
+                int last = Math.Min(vehicles.Count, first + visibleRows); // one past the last shown
+
                 Title($"Manage parking - {garage.Name}");
                 Text("Up/Down: move   Spacebar: check/uncheck   Enter: apply   Esc: cancel");
                 Console.WriteLine();
 
                 Text($"    {tableLines[0]}"); // 4 spaces = width of "[x] "
-                for (int i = 0; i < vehicles.Count; i++)
+                for (int i = first; i < last; i++)
                 {
                     string row = FormatRow(tableLines[i + 1], isChecked[i], garage.IsParked(vehicles[i].RegistrationNumber));
 
@@ -41,6 +51,9 @@ namespace GarageConsoleApp.UI.Forms
                 }
 
                 Console.WriteLine();
+                if (vehicles.Count > visibleRows)
+                    HintText($"Showing {first + 1}-{last} of {vehicles.Count}");
+
                 string summary = $"Parking spaces needed: {ParkingUnits.Format(neededUnits)} / {garage.Capacity}";
                 if (fits)
                 {
