@@ -41,9 +41,15 @@
         private const string HelpText = "Use the arrow keys to choose, then press Enter.";
         /// <summary>
         /// Lets the user pick one option with the arrow keys. Returns the index of the chosen option.
+        /// If backLabel is given it is added as the last option, and choosing it returns -1.
         /// </summary>
-        internal static int Choose(string? prompt, string[] options, int initialIndex = 0, bool separateLast = false)
+        internal static int Choose(string? prompt, string[] options, int initialIndex = 0, bool separateLast = false, string? backLabel = null)
         {
+            // The back option goes last, with a gap before it
+            string[] shown = options;
+            if (backLabel != null)
+                shown = [.. options, backLabel];
+
             if (prompt != null)
             {
                 Text(prompt);
@@ -54,7 +60,7 @@
             Console.CursorVisible = false;
 
             int selected = initialIndex;
-            int rows = options.Length + (separateLast ? 1 : 0);
+            int rows = shown.Length + (backLabel != null ? 1 : 0);
             int top = -1; // first row of the option list, known after the first draw
 
             while (true)
@@ -62,12 +68,12 @@
                 if (top != -1)
                     Console.SetCursorPosition(0, top);
 
-                for (int i = 0; i < options.Length; i++)
+                for (int i = 0; i < shown.Length; i++)
                 {
-                    if (separateLast && i == options.Length - 1)
-                        Console.WriteLine(); // spacer before the last option
+                    if (backLabel != null && i == shown.Length - 1)
+                        Console.WriteLine(); // spacer before the back option
 
-                    Option(options[i], i == selected);
+                    Option(shown[i], i == selected);
                 }
 
                 if (top == -1)
@@ -76,14 +82,14 @@
                 switch (Console.ReadKey(true).Key)
                 {
                     case ConsoleKey.DownArrow:
-                        selected = selected == options.Length - 1 ? 0 : selected + 1;
+                        selected = selected == shown.Length - 1 ? 0 : selected + 1;
                         break;
                     case ConsoleKey.UpArrow:
-                        selected = selected == 0 ? options.Length - 1 : selected - 1;
+                        selected = selected == 0 ? shown.Length - 1 : selected - 1;
                         break;
                     case ConsoleKey.Enter:
                         Console.CursorVisible = true;
-                        return selected;
+                        return backLabel != null && selected == shown.Length - 1 ? -1 : selected;
                 }
             }
         }

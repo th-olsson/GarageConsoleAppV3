@@ -12,7 +12,9 @@ namespace GarageConsoleApp.UI.Forms
 
             // The first option means "no type filter", the rest are the vehicle types
             string[] typeOptions = ["Any type", .. Vehicle.TypeNames];
-            int typeChoice = Choose("What type of vehicle?", typeOptions);
+            int typeChoice = Choose("What type of vehicle?", typeOptions, backLabel: "Cancel");
+            if (typeChoice == -1)
+                return;
 
             Console.WriteLine();
             string? color = ReadOptionalString("Color, e.g. Black (leave blank to skip): ");

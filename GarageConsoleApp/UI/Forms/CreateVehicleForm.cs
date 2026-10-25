@@ -9,7 +9,11 @@ namespace GarageConsoleApp.UI.Forms
         {
             Title("Add vehicle");
 
-            string type = Vehicle.TypeNames[Choose("What type of vehicle?", [.. Vehicle.TypeNames])];
+            int typeChoice = Choose("What type of vehicle?", [.. Vehicle.TypeNames], backLabel: "Cancel");
+            if (typeChoice == -1)
+                return;
+
+            string type = Vehicle.TypeNames[typeChoice];
 
             Console.WriteLine();
             string registrationNumber = ReadRegistrationNumber(type, garage);

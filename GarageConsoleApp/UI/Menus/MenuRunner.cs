@@ -19,24 +19,19 @@ namespace GarageConsoleApp.UI.Menus
             {
                 var options = getOptions();
 
-                // Exit is always the last option
-                string[] labels = new string[options.Length + 1];
-
+                string[] labels = new string[options.Length];
                 for (int i = 0; i < options.Length; i++)
                 {
                     labels[i] = options[i].Label;
                 }
 
-                labels[options.Length] = exitLabel;
-                int exitIndex = options.Length;
-
-                // Keep the marker in range if the number of options has shrunk
-                selected = Math.Min(selected, exitIndex);
+                // Keep the marker in range if the number of options has shrunk (the last position is the back option)
+                selected = Math.Min(selected, options.Length);
 
                 Title(title);
-                selected = Choose(null, labels, selected, separateLast: true);
+                selected = Choose(null, labels, selected, backLabel: exitLabel);
 
-                if (selected == exitIndex)
+                if (selected == -1)
                     return;
 
                 Console.WriteLine();
