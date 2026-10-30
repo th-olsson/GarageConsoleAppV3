@@ -1,4 +1,6 @@
-﻿namespace GarageConsoleApp
+﻿using GarageConsoleApp.Models;
+
+namespace GarageConsoleApp
 {
     internal enum ParkingChange { LeftGarage, Parked, NotEnoughSpace }
 

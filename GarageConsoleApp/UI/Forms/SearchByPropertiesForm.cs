@@ -1,4 +1,5 @@
 ﻿using static GarageConsoleApp.UI.ConsoleUI;
+using GarageConsoleApp.Models;
 
 namespace GarageConsoleApp.UI.Forms
 {
