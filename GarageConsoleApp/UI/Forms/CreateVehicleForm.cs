@@ -5,7 +5,7 @@ namespace GarageConsoleApp.UI.Forms
 {
     internal static class CreateVehicleForm
     {
-        internal static void Run(Garage<Vehicle> garage)
+        internal static void Run(IHandler handler)
         {
             Title("Add vehicle");
 
@@ -16,7 +16,7 @@ namespace GarageConsoleApp.UI.Forms
             string type = Vehicle.TypeNames[typeChoice];
 
             Console.WriteLine();
-            string registrationNumber = ReadRegistrationNumber(type, garage);
+            string registrationNumber = ReadRegistrationNumber(type, handler);
             string model = ReadString("Model, e.g. Volvo V70: ");
             string color = ReadString("Color, e.g. Black: ");
             Console.WriteLine();
@@ -31,14 +31,14 @@ namespace GarageConsoleApp.UI.Forms
                 _ => throw new InvalidOperationException($"The form does not support {type} yet.")
             };
 
-            garage.Register(vehicle);
+            ParkResult result = handler.AddVehicle(vehicle);
 
             Console.WriteLine();
             Text("Vehicle added:");
             VehicleTable.Print([vehicle]);
             Console.WriteLine();
 
-            if (garage.Park(vehicle) == ParkResult.Parked)
+            if (result == ParkResult.Parked)
                 Text("It has been parked in the garage.");
             else
                 ErrorText("There is not enough room in the garage right now. You can park it later under Manage parking.");
@@ -47,7 +47,7 @@ namespace GarageConsoleApp.UI.Forms
         }
 
         // Asks until the number follows the format for the type and is not already registered
-        private static string ReadRegistrationNumber(string type, Garage<Vehicle> garage)
+        private static string ReadRegistrationNumber(string type, IHandler handler)
         {
             RegistrationFormat format = type == nameof(Airplane)
                 ? RegistrationFormat.Aircraft
@@ -65,7 +65,7 @@ namespace GarageConsoleApp.UI.Forms
 
                 string registrationNumber = RegistrationFormat.Normalize(input);
 
-                if (garage.IsRegistered(registrationNumber))
+                if (handler.IsRegistered(registrationNumber))
                 {
                     ErrorText($"{registrationNumber} is already registered.");
                     continue;

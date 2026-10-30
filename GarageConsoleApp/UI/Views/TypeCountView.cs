@@ -5,11 +5,11 @@ namespace GarageConsoleApp.UI.Views
 {
     internal static class TypeCountView
     {
-        internal static void Run(Garage<Vehicle> garage)
+        internal static void Run(IHandler handler)
         {
-            Title($"Vehicle types - {garage.Name}");
+            Title($"Vehicle types - {handler.Name}");
 
-            List<(string TypeName, int Count)> counts = garage.CountByType();
+            List<(string TypeName, int Count)> counts = handler.CountByType();
 
             string[][] rows = new string[counts.Count][];
             for (int i = 0; i < counts.Count; i++)

@@ -1,5 +1,4 @@
 ﻿using static GarageConsoleApp.UI.ConsoleUI;
-using GarageConsoleApp.Models;
 
 namespace GarageConsoleApp.UI.Forms
 {
@@ -8,30 +7,22 @@ namespace GarageConsoleApp.UI.Forms
         private const int MinCapacity = 1;
         private const int MaxCapacity = 100;
 
-        internal static Garage<Vehicle> Run()
+        internal static void Run(IHandler handler)
         {
             Title("Create garage");
             string name = ReadString("What do you want to call your garage: ");
             int capacity = ReadInt($"How many parking spaces do you want? ({MinCapacity}-{MaxCapacity}): ", MinCapacity, MaxCapacity);
             int selected = Choose("Do you want an empty or populated garage?", ["Empty garage", "Populated garage"]);
 
-            var garage = new Garage<Vehicle>(name, capacity);
-
-            // Every garage starts with the example vehicles in its register
-            foreach (Vehicle vehicle in VehicleRegistry.CreateSeed())
-                garage.Register(vehicle);
+            int parked = handler.CreateGarage(name, capacity, populate: selected == 1);
 
             Console.WriteLine();
             Text($"Garage \"{name}\" created with {capacity} parking spaces.");
 
             if (selected == 1)
-            {
-                int parked = garage.ParkInRandomOrder(garage.GetRegisteredVehicles());
-                Text($"{parked} of {garage.GetRegisteredVehicles().Count} vehicles from the register were parked.");
-            }
+                Text($"{parked} of {handler.GetRegisteredVehicles().Count} vehicles from the register were parked.");
 
             PressAnyKey();
-            return garage;
         }
     }
 }

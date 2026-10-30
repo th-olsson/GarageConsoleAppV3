@@ -5,11 +5,11 @@ namespace GarageConsoleApp.UI.Menus
 {
     internal static class SearchMenu
     {
-        internal static void Run(Garage<Vehicle> garage)
+        internal static void Run(IHandler handler)
         {
             MenuRunner.Run("Search vehicles", "Back",
-                ("By registration number", () => FindByRegistrationForm.Run(garage)),
-                ("By properties", () => SearchByPropertiesForm.Run(garage))
+                ("By registration number", () => FindByRegistrationForm.Run(handler)),
+                ("By properties", () => SearchByPropertiesForm.Run(handler))
             );
         }
     }

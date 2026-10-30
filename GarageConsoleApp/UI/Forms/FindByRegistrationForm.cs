@@ -5,13 +5,13 @@ namespace GarageConsoleApp.UI.Forms
 {
     internal static class FindByRegistrationForm
     {
-        internal static void Run(Garage<Vehicle> garage)
+        internal static void Run(IHandler handler)
         {
             Title("Find vehicle by registration number");
             string registrationNumber = ReadString("Registration number: ");
 
             Console.WriteLine();
-            Vehicle? vehicle = garage.Find(registrationNumber);
+            Vehicle? vehicle = handler.Find(registrationNumber);
 
             if (vehicle == null)
                 ErrorText($"No parked vehicle with registration number {registrationNumber.ToUpper()}.");

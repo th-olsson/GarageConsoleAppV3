@@ -5,11 +5,11 @@ namespace GarageConsoleApp.UI.Views
 {
     internal static class ListVehiclesView
     {
-        internal static void Run(Garage<Vehicle> garage)
+        internal static void Run(IHandler handler)
         {
-            Title($"Parked vehicles - {garage.Name}");
+            Title($"Parked vehicles - {handler.Name}");
 
-            List<Vehicle> parked = garage.GetParkedVehicles();
+            List<Vehicle> parked = handler.GetParkedVehicles();
 
             if (parked.Count == 0)
                 Text("The garage is empty.");
@@ -17,7 +17,7 @@ namespace GarageConsoleApp.UI.Views
                 VehicleTable.Print(parked);
 
             Console.WriteLine();
-            Text($"Parking spaces used: {ParkingUnits.Format(garage.UsedUnits)} / {garage.Capacity}");
+            Text($"Parking spaces used: {ParkingUnits.Format(handler.UsedUnits)} / {handler.Capacity}");
             PressAnyKey();
         }
     }

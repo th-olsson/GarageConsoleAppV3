@@ -5,14 +5,14 @@ namespace GarageConsoleApp.UI.Forms
 {
     internal static class ManageParkingForm
     {
-        internal static void Run(Garage<Vehicle> garage)
+        internal static void Run(IHandler handler)
         {
-            List<Vehicle> vehicles = garage.GetRegisteredVehicles();
+            List<Vehicle> vehicles = handler.GetRegisteredVehicles();
 
             // Start from what is parked right now
             bool[] isChecked = new bool[vehicles.Count];
             for (int i = 0; i < vehicles.Count; i++)
-                isChecked[i] = garage.IsParked(vehicles[i].RegistrationNumber);
+                isChecked[i] = handler.IsParked(vehicles[i].RegistrationNumber);
 
             string[] tableLines = BuildTable(vehicles);
 
@@ -25,7 +25,7 @@ namespace GarageConsoleApp.UI.Forms
             {
                 List<Vehicle> wanted = GetChecked(vehicles, isChecked);
                 int neededUnits = wanted.Sum(vehicle => vehicle.SizeInUnits);
-                bool fits = garage.CanHold(wanted);
+                bool fits = handler.CanHold(wanted);
 
                 // Show only as many vehicles as fit in the window, scrolled so the selected one is visible
                 int visibleRows = Math.Max(3, Console.WindowHeight - 12);
@@ -36,14 +36,14 @@ namespace GarageConsoleApp.UI.Forms
                     first = selected - visibleRows + 1;
                 int last = Math.Min(vehicles.Count, first + visibleRows); // one past the last shown
 
-                Title($"Manage parking - {garage.Name}");
+                Title($"Manage parking - {handler.Name}");
                 Text("Up/Down: move   Spacebar: check/uncheck   Enter: apply   Esc: cancel");
                 Console.WriteLine();
 
                 Text($"    {tableLines[0]}"); // 4 spaces = width of "[x] "
                 for (int i = first; i < last; i++)
                 {
-                    string row = FormatRow(tableLines[i + 1], isChecked[i], garage.IsParked(vehicles[i].RegistrationNumber));
+                    string row = FormatRow(tableLines[i + 1], isChecked[i], handler.IsParked(vehicles[i].RegistrationNumber));
 
                     if (i == selected)
                         HighlightedText(row);
@@ -55,7 +55,7 @@ namespace GarageConsoleApp.UI.Forms
                 if (vehicles.Count > visibleRows)
                     HintText($"Showing {first + 1}-{last} of {vehicles.Count}");
 
-                string summary = $"Parking spaces needed: {ParkingUnits.Format(neededUnits)} / {garage.Capacity}";
+                string summary = $"Parking spaces needed: {ParkingUnits.Format(neededUnits)} / {handler.Capacity}";
                 if (fits)
                 {
                     Text(summary);
@@ -80,7 +80,7 @@ namespace GarageConsoleApp.UI.Forms
                         if (fits)
                         {
                             Console.WriteLine();
-                            Apply(garage, vehicles, isChecked);
+                            Apply(handler, vehicles, isChecked);
                             PressAnyKey();
                             running = false;
                         }
@@ -135,11 +135,11 @@ namespace GarageConsoleApp.UI.Forms
             }
             return result;
         }
-        private static void Apply(Garage<Vehicle> garage, List<Vehicle> vehicles, bool[] isChecked)
+        private static void Apply(IHandler handler, List<Vehicle> vehicles, bool[] isChecked)
         {
             Console.Clear();
 
-            List<ParkingReport> reports = garage.SetParked(GetChecked(vehicles, isChecked));
+            List<ParkingReport> reports = handler.SetParked(GetChecked(vehicles, isChecked));
 
             foreach (ParkingReport report in reports)
             {

@@ -37,10 +37,10 @@ Applikationen ska som minimum ha:
     - [x] Airplane
 - [x] Varje subklass har minst en egen egenskap
 ### Arkitektur
-- [ ] `GarageHandler` hanterar den funktionalitet som användargränssnittet behöver, så att gränssnittet inte pratar direkt med `Garage<T>`
-- [ ] Interface för handlern (`IHandler`)
+- [x] `GarageHandler` hanterar den funktionalitet som användargränssnittet behöver, så att gränssnittet inte pratar direkt med `Garage<T>`
+- [x] Interface för handlern (`IHandler`)
 - [ ] Interface för användargränssnittet (`IUI`)
-- [ ] Användargränssnittet använder bara `IHandler`, inte den konkreta klassen
+- [x] Användargränssnittet använder bara `IHandler`, inte den konkreta klassen
 * * *
 ### Funktionalitet
 Det ska gå att

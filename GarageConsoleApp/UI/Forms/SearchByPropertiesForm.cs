@@ -5,7 +5,7 @@ namespace GarageConsoleApp.UI.Forms
 {
     internal static class SearchByPropertiesForm
     {
-        internal static void Run(Garage<Vehicle> garage)
+        internal static void Run(IHandler handler)
         {
             Title("Search vehicles");
             Text("Tell us what you are looking for. Only vehicles that match everything you enter are shown.");
@@ -38,7 +38,7 @@ namespace GarageConsoleApp.UI.Forms
             }
             else
             {
-                List<Vehicle> matches = garage.Search(filter);
+                List<Vehicle> matches = handler.Search(filter);
 
                 if (matches.Count == 0)
                 {
