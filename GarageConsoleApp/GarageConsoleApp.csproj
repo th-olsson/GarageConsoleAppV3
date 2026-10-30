@@ -7,4 +7,8 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="GarageConsoleApp.Tests" />
+	</ItemGroup>
+
 </Project>

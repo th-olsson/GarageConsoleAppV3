@@ -68,10 +68,10 @@ Applikationen skall fel hantera indata på ett robust sätt, så att den inte kr
 inmatning eller användning.
 * * *
 ### Enhetstester
-- [ ] Testerna skapas i ett eget testprojekt
-- [ ] Vi testar de publika metoderna i klassen `Garage`
-- [ ] Testerna är strukturerade som Arrange, Act, Assert
-- [ ] Testerna har förklarande namn enligt `MethodName_StateUnderTest_ExpectedBehavior`, t.ex. `Sum_NegativeNumberAs1stParam_ExceptionThrown`
+- [x] Testerna skapas i ett eget testprojekt
+- [x] Vi testar de publika metoderna i klassen `Garage`
+- [x] Testerna är strukturerade som Arrange, Act, Assert
+- [x] Testerna har förklarande namn enligt `MethodName_StateUnderTest_ExpectedBehavior`, t.ex. `Sum_NegativeNumberAs1stParam_ExceptionThrown`
 - Gärna TDD: skriv testet före implementationen
 - Extra (om tid finns): tester för hela applikationen
 * * *
