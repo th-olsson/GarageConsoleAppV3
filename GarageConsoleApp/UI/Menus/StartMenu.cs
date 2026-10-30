@@ -2,38 +2,45 @@
 
 namespace GarageConsoleApp.UI.Menus
 {
-    internal static class StartMenu
+    internal class StartMenu : IUI
     {
-        internal static void Run(IHandler handler)
+        private readonly IHandler _handler;
+
+        public StartMenu(IHandler handler)
+        {
+            _handler = handler;
+        }
+
+        public void Run()
         {
             // Continue where the user left off, if there is a saved garage
-            handler.LoadGarage();
+            _handler.LoadGarage();
 
             MenuRunner.Run("Garage Manager", "Exit", () =>
             {
                 var options = new List<(string Label, Action Action)>
                 {
                     // Creates the garage the first time, then opens it
-                    (GarageLabel(handler), () =>
+                    (GarageLabel(), () =>
                     {
-                        if (!handler.HasGarage)
-                            CreateGarageForm.Run(handler);
+                        if (!_handler.HasGarage)
+                            CreateGarageForm.Run(_handler);
 
-                        GarageMenu.Run(handler);
+                        GarageMenu.Run(_handler);
                     })
                 };
 
-                if (handler.HasGarage)
-                    options.Add(("Delete garage", () => DeleteGarageForm.Run(handler)));
+                if (_handler.HasGarage)
+                    options.Add(("Delete garage", () => DeleteGarageForm.Run(_handler)));
 
                 return [.. options];
             });
         }
 
         // Text for the garage option: "Create garage" if none exists, otherwise its name and occupancy
-        private static string GarageLabel(IHandler handler) =>
-            !handler.HasGarage
+        private string GarageLabel() =>
+            !_handler.HasGarage
                 ? "Create garage"
-                : $"{handler.Name} ({ParkingUnits.Format(handler.UsedUnits)} of {handler.Capacity} parking spaces used)";
+                : $"{_handler.Name} ({ParkingUnits.Format(_handler.UsedUnits)} of {_handler.Capacity} parking spaces used)";
     }
 }

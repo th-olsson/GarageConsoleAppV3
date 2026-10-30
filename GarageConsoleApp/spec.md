@@ -39,7 +39,7 @@ Applikationen ska som minimum ha:
 ### Arkitektur
 - [x] `GarageHandler` hanterar den funktionalitet som användargränssnittet behöver, så att gränssnittet inte pratar direkt med `Garage<T>`
 - [x] Interface för handlern (`IHandler`)
-- [ ] Interface för användargränssnittet (`IUI`)
+- [x] Interface för användargränssnittet (`IUI`)
 - [x] Användargränssnittet använder bara `IHandler`, inte den konkreta klassen
 * * *
 ### Funktionalitet

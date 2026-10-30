@@ -7,7 +7,8 @@ namespace GarageConsoleApp
         static void Main(string[] args)
         {
             IHandler handler = new GarageHandler();
-            StartMenu.Run(handler);
+            IUI ui = new StartMenu(handler);
+            ui.Run();
         }
     }
 }
