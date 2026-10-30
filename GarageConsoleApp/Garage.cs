@@ -4,7 +4,7 @@ namespace GarageConsoleApp
 {
     internal class Garage
     {
-        private readonly List<Vehicle> _parked;
+        private readonly List<Vehicle> _parked = [];
         private readonly List<Vehicle> _registered = [];
         public string Name { get; }
         /// <summary>The number of parking spaces.</summary>
@@ -20,13 +20,12 @@ namespace GarageConsoleApp
 
             Name = name;
             Capacity = capacity;
-            _parked = [];
         }
 
         /// <summary>All vehicles the garage knows about, parked or not.</summary>
         public List<Vehicle> GetRegisteredVehicles() => [.. _registered];
         public bool IsRegistered(string registrationNumber) =>
-            _registered.Any(vehicle => vehicle.RegistrationNumber.Equals(registrationNumber, StringComparison.OrdinalIgnoreCase));
+            _registered.Any(vehicle => HasRegistrationNumber(vehicle, registrationNumber));
         /// <summary>Adds the vehicle to the register. Returns false if the registration number is taken.</summary>
         public bool Register(Vehicle vehicle)
         {
@@ -36,19 +35,13 @@ namespace GarageConsoleApp
             _registered.Add(vehicle);
             return true;
         }
-        public bool IsParked(string registrationNumber) => FindIndex(registrationNumber) != -1;
-        public bool Remove(string registrationNumber)
-        {
-            int index = FindIndex(registrationNumber);
-            if (index == -1)
-                return false;
-
-            _parked.RemoveAt(index);
-            return true;
-        }
+        public bool IsParked(string registrationNumber) =>
+            _parked.Any(vehicle => HasRegistrationNumber(vehicle, registrationNumber));
+        public bool Remove(string registrationNumber) =>
+            _parked.RemoveAll(vehicle => HasRegistrationNumber(vehicle, registrationNumber)) > 0;
         public ParkResult Park(Vehicle vehicle)
         {
-            if (FindIndex(vehicle.RegistrationNumber) != -1)
+            if (IsParked(vehicle.RegistrationNumber))
                 return ParkResult.AlreadyParked;
 
             if (vehicle.SizeInUnits > FreeUnits)
@@ -66,25 +59,9 @@ namespace GarageConsoleApp
                 .GroupBy(vehicle => vehicle.TypeName)
                 .Select(group => (TypeName: group.Key, Count: group.Count()))
                 .ToList();
-        public Vehicle? Find(string registrationNumber)
-        {
-            int index = FindIndex(registrationNumber);
-            return index == -1 ? null : _parked[index];
-        }
-        public List<Vehicle> Search(VehicleFilter filter)
-        {
-            List<Vehicle> results = [];
-
-            foreach (Vehicle vehicle in GetParkedVehicles())
-            {
-                if (filter.Matches(vehicle))
-                {
-                    results.Add(vehicle);
-                }
-            }
-
-            return results;
-        }
+        public Vehicle? Find(string registrationNumber) =>
+            _parked.FirstOrDefault(vehicle => HasRegistrationNumber(vehicle, registrationNumber));
+        public List<Vehicle> Search(VehicleFilter filter) => _parked.Where(filter.Matches).ToList();
         /// <summary>True if all the vehicles together fit in an empty garage.</summary>
         public bool CanHold(List<Vehicle> vehicles) => vehicles.Sum(vehicle => vehicle.SizeInUnits) <= TotalUnits;
 
@@ -96,17 +73,14 @@ namespace GarageConsoleApp
         {
             List<ParkingReport> reports = [];
 
-            foreach (Vehicle vehicle in _registered)
+            foreach (Vehicle vehicle in _registered.Where(vehicle => !wanted.Contains(vehicle)))
             {
-                if (!wanted.Contains(vehicle) && Remove(vehicle.RegistrationNumber))
+                if (Remove(vehicle.RegistrationNumber))
                     reports.Add(new ParkingReport(vehicle, ParkingChange.LeftGarage));
             }
 
-            foreach (Vehicle vehicle in wanted)
+            foreach (Vehicle vehicle in wanted.Where(vehicle => !IsParked(vehicle.RegistrationNumber)))
             {
-                if (IsParked(vehicle.RegistrationNumber))
-                    continue;
-
                 ParkingChange change = Park(vehicle) == ParkResult.Parked
                     ? ParkingChange.Parked
                     : ParkingChange.NotEnoughSpace;
@@ -129,15 +103,7 @@ namespace GarageConsoleApp
             }
             return parked;
         }
-        private int FindIndex(string registrationNumber)
-        {
-            for (int i = 0; i < _parked.Count; i++)
-            {
-                Vehicle? vehicle = _parked[i];
-                if (vehicle.RegistrationNumber.Equals(registrationNumber, StringComparison.OrdinalIgnoreCase))
-                    return i;
-            }
-            return -1;
-        }
+        private static bool HasRegistrationNumber(Vehicle vehicle, string registrationNumber) =>
+            vehicle.RegistrationNumber.Equals(registrationNumber, StringComparison.OrdinalIgnoreCase);
     }
 }
