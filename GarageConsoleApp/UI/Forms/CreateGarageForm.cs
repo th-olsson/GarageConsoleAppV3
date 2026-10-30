@@ -8,14 +8,14 @@ namespace GarageConsoleApp.UI.Forms
         private const int MinCapacity = 1;
         private const int MaxCapacity = 100;
 
-        internal static Garage Run()
+        internal static Garage<Vehicle> Run()
         {
             Title("Create garage");
             string name = ReadString("What do you want to call your garage: ");
             int capacity = ReadInt($"How many parking spaces do you want? ({MinCapacity}-{MaxCapacity}): ", MinCapacity, MaxCapacity);
             int selected = Choose("Do you want an empty or populated garage?", ["Empty garage", "Populated garage"]);
 
-            var garage = new Garage(name, capacity);
+            var garage = new Garage<Vehicle>(name, capacity);
 
             // Every garage starts with the example vehicles in its register
             foreach (Vehicle vehicle in VehicleRegistry.CreateSeed())

@@ -5,7 +5,7 @@ namespace GarageConsoleApp.UI.Forms
 {
     internal static class FindByRegistrationForm
     {
-        internal static void Run(Garage garage)
+        internal static void Run(Garage<Vehicle> garage)
         {
             Title("Find vehicle by registration number");
             string registrationNumber = ReadString("Registration number: ");

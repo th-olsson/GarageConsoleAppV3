@@ -1,10 +1,11 @@
-﻿using static GarageConsoleApp.UI.ConsoleUI;
+﻿using GarageConsoleApp.Models;
+using static GarageConsoleApp.UI.ConsoleUI;
 
 namespace GarageConsoleApp.UI.Views
 {
     internal static class TypeCountView
     {
-        internal static void Run(Garage garage)
+        internal static void Run(Garage<Vehicle> garage)
         {
             Title($"Vehicle types - {garage.Name}");
 

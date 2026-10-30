@@ -1,12 +1,13 @@
-﻿using GarageConsoleApp.UI.Forms;
-using GarageConsoleApp.UI.Views;
+﻿using GarageConsoleApp.Models;
 using GarageConsoleApp.Storage;
+using GarageConsoleApp.UI.Forms;
+using GarageConsoleApp.UI.Views;
 
 namespace GarageConsoleApp.UI.Menus
 {
     internal static class GarageMenu
     {
-        internal static void Run(Garage garage)
+        internal static void Run(Garage<Vehicle> garage)
         {
             MenuRunner.Run(garage.Name, "Back to start",
                 ("Manage parking", () =>

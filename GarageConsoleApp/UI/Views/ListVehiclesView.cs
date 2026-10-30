@@ -5,7 +5,7 @@ namespace GarageConsoleApp.UI.Views
 {
     internal static class ListVehiclesView
     {
-        internal static void Run(Garage garage)
+        internal static void Run(Garage<Vehicle> garage)
         {
             Title($"Parked vehicles - {garage.Name}");
 

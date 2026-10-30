@@ -5,7 +5,7 @@ namespace GarageConsoleApp.UI.Forms
 {
     internal static class SearchByPropertiesForm
     {
-        internal static void Run(Garage garage)
+        internal static void Run(Garage<Vehicle> garage)
         {
             Title("Search vehicles");
             Text("Tell us what you are looking for. Only vehicles that match everything you enter are shown.");

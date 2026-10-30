@@ -5,7 +5,7 @@ namespace GarageConsoleApp.UI.Forms
 {
     internal static class CreateVehicleForm
     {
-        internal static void Run(Garage garage)
+        internal static void Run(Garage<Vehicle> garage)
         {
             Title("Add vehicle");
 
@@ -47,7 +47,7 @@ namespace GarageConsoleApp.UI.Forms
         }
 
         // Asks until the number follows the format for the type and is not already registered
-        private static string ReadRegistrationNumber(string type, Garage garage)
+        private static string ReadRegistrationNumber(string type, Garage<Vehicle> garage)
         {
             RegistrationFormat format = type == nameof(Airplane)
                 ? RegistrationFormat.Aircraft

@@ -1,4 +1,5 @@
-﻿using GarageConsoleApp.Storage;
+﻿using GarageConsoleApp.Models;
+using GarageConsoleApp.Storage;
 using static GarageConsoleApp.UI.ConsoleUI;
 
 namespace GarageConsoleApp.UI.Forms
@@ -6,7 +7,7 @@ namespace GarageConsoleApp.UI.Forms
     internal static class DeleteGarageForm
     {
         /// <summary>Asks for confirmation, then deletes the saved garage. Returns true if it was deleted.</summary>
-        internal static bool Run(Garage garage)
+        internal static bool Run(Garage<Vehicle> garage)
         {
             Title("Delete garage");
             Text($"This deletes \"{garage.Name}\" and all {garage.GetRegisteredVehicles().Count} vehicles in its registry.");

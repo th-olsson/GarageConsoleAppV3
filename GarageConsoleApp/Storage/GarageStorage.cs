@@ -41,7 +41,7 @@ namespace GarageConsoleApp.Storage
             Converters = { new JsonStringEnumConverter() }
         };
 
-        internal static void Save(Garage garage)
+        internal static void Save(Garage<Vehicle> garage)
         {
             var data = new GarageData { Name = garage.Name, Capacity = garage.Capacity };
 
@@ -53,7 +53,7 @@ namespace GarageConsoleApp.Storage
         }
 
         /// <summary>Returns the saved garage and vehicles, or null if there is no usable file.</summary>
-        internal static Garage? Load()
+        internal static Garage<Vehicle>? Load()
         {
             if (!File.Exists(FilePath))
                 return null;
@@ -64,7 +64,7 @@ namespace GarageConsoleApp.Storage
                 if (data == null)
                     return null;
 
-                var garage = new Garage(data.Name, data.Capacity);
+                var garage = new Garage<Vehicle>(data.Name, data.Capacity);
 
                 foreach (VehicleData item in data.Vehicles)
                 {

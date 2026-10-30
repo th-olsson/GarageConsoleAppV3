@@ -5,7 +5,7 @@ namespace GarageConsoleApp.UI.Forms
 {
     internal static class ManageParkingForm
     {
-        internal static void Run(Garage garage)
+        internal static void Run(Garage<Vehicle> garage)
         {
             List<Vehicle> vehicles = garage.GetRegisteredVehicles();
 
@@ -135,7 +135,7 @@ namespace GarageConsoleApp.UI.Forms
             }
             return result;
         }
-        private static void Apply(Garage garage, List<Vehicle> vehicles, bool[] isChecked)
+        private static void Apply(Garage<Vehicle> garage, List<Vehicle> vehicles, bool[] isChecked)
         {
             Console.Clear();
 

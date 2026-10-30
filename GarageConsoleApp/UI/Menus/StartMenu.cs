@@ -1,4 +1,5 @@
-﻿using GarageConsoleApp.Storage;
+﻿using GarageConsoleApp.Models;
+using GarageConsoleApp.Storage;
 using GarageConsoleApp.UI.Forms;
 
 namespace GarageConsoleApp.UI.Menus
@@ -8,7 +9,7 @@ namespace GarageConsoleApp.UI.Menus
         internal static void Run()
         {
             // Continue where the user left off, if there is a saved garage. Otherwise null until it is created.
-            Garage? garage = GarageStorage.Load();
+            Garage<Vehicle>? garage = GarageStorage.Load();
 
             MenuRunner.Run("Garage Manager", "Exit", () =>
             {
@@ -29,7 +30,7 @@ namespace GarageConsoleApp.UI.Menus
 
                 if (garage != null)
                 {
-                    Garage current = garage;
+                    Garage<Vehicle> current = garage;
                     options.Add(("Delete garage", () =>
                     {
                         if (DeleteGarageForm.Run(current))
@@ -43,7 +44,7 @@ namespace GarageConsoleApp.UI.Menus
         }
 
         // Text for the garage option: "Create garage" if none exists, otherwise its name and occupancy
-        private static string GarageLabel(Garage? garage) =>
+        private static string GarageLabel(Garage<Vehicle>? garage) =>
             garage == null
                 ? "Create garage"
                 : $"{garage.Name} ({ParkingUnits.Format(garage.UsedUnits)} of {garage.Capacity} parking spaces used)";

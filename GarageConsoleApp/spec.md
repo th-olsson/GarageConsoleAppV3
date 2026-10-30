@@ -22,9 +22,9 @@ Applikationen ska som minimum ha:
 - Klassen behöver inte ärva från någon annan klass eller implementera någon annan interface
 - [x] Samlingen av fordon ska internt i klassen hanteras som en privat `List`
 - [x] Vid instansieringen av ett nytt garage måste kapaciteten anges som argument till konstruktorn.
-- [ ] Garage implementeras som en generisk klass: `Garage<T>`
-- [ ] Den generiska typen begränsas med en constraint: `where T : Vehicle`
-- [ ] Garage implementerar `IEnumerable<T>`, så det går att iterera över en instans med `foreach`
+- [x] Garage implementeras som en generisk klass: `Garage<T>`
+- [x] Den generiska typen begränsas med en constraint: `where T : Vehicle`
+- [x] Garage implementerar `IEnumerable<T>`, så det går att iterera över en instans med `foreach`
 ### Vehicle
 - [x] Fordon ska implementeras som klassen Vehicle och subklasser till den
 - [x] Vehicle innehåller samtliga egenskaper som ska finnas i samtliga fordonstyper. T.ex. registreringsnummer, färg, antal hjul, m.m.
